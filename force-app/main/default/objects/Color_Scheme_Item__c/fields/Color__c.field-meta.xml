@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Color__c</fullName>
+    <defaultValue>&quot;000000&quot;</defaultValue>
+    <description>Hex Code of the Color that this Color Scheme Item represents</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Hex Code of the Color that this Color Scheme Item represents</inlineHelpText>
+    <label>Color</label>
+    <length>10</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

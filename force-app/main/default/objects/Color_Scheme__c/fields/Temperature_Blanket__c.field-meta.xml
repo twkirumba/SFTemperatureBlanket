@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Temperature_Blanket__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Temperature Blanket</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Temperature Blanket</inlineHelpText>
+    <label>Temperature Blanket</label>
+    <referenceTo>Temperature_Blanket__c</referenceTo>
+    <relationshipLabel>Color Schemes</relationshipLabel>
+    <relationshipName>Color_Schemes</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

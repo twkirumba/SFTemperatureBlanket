@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DateWeather__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Relationship to a DateWeather record where this BlanketRow can pull a Date and Temp</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Relationship to a DateWeather record where this BlanketRow can pull a Date and Temp</inlineHelpText>
+    <label>DateWeather</label>
+    <referenceTo>DateWeather__c</referenceTo>
+    <relationshipLabel>Blanket Rows</relationshipLabel>
+    <relationshipName>Blanket_Rows</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

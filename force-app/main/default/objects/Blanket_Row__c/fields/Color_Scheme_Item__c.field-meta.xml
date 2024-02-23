@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Color_Scheme_Item__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Color Scheme Item that defines this Blanket Row&apos;s</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Color Scheme Item that defines this Blanket Row&apos;s</inlineHelpText>
+    <label>Color Scheme Item</label>
+    <referenceTo>Color_Scheme_Item__c</referenceTo>
+    <relationshipLabel>Blanket Rows</relationshipLabel>
+    <relationshipName>Blanket_Rows</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>
