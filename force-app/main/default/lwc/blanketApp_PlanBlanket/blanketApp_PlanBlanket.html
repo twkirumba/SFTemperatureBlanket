@@ -81,33 +81,37 @@
             <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" role="grid">
                 <thead>
                 <tr>
-                    <th scope="col" height="10">Blanket Row</th>
+                    <th>
+                        Blanket Preview
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
-                <template for:each={listOfBlanketRows} for:item="rec">
-                    <tr key={index} class="slds-hint-parent" >
-                        <td style="font-weight: bold">
-                            <lightning-formatted-date-time value={rec.DateWeather__r.Date__c}></lightning-formatted-date-time>
-                           &nbsp;
-                            <lightning-formatted-number value={rec.DateWeather__r.Avg_Temp__c}></lightning-formatted-number>
-                            &nbsp;
-                            <lightning-formatted-text value={rec.Color_Scheme_Item__r.Color__c}></lightning-formatted-text>
-                        </td>
+                    <tr class="slds-hint-parent" >
+                        <template for:each={listOfBlanketRows} for:item="rec">
+                                <td key={index} style="height: 150px; width: 5px">
+                                    <SPAN style="writing-mode: vertical-lr;
+                     -ms-writing-mode: tb-rl;
+                     transform: rotate(0deg);"><lightning-formatted-date-time value={rec.DateWeather__r.Date__c}></lightning-formatted-date-time>
+                     &nbsp;
+                         <lightning-formatted-number value={rec.DateWeather__r.Avg_Temp__c}></lightning-formatted-number>
+                         &nbsp;
+                         <lightning-formatted-text value={rec.Color_Scheme_Item__r.Color__c}></lightning-formatted-text></SPAN>                                   
+                                </td>
+                        </template>
                     </tr>
-                </template>
                 </tbody>
             </table>
         </lightning-card>
-        <lightning-card rendered={listOfBlanketRowsError} title="Error">
-            {listOfBlanketRowsError}
-        </lightning-card>
+        <template lwc:if={listOfBlanketRowsError}>
+            <lightning-card title="Error">
+                {listOfBlanketRowsError}
+            </lightning-card>
+        </template>
+        
     </template>
     
     <!--
         Save/Cancel
     -->
-    <lightning-card>
-        <h3> Placeholder for Temperature Blanket App </h3>
-    </lightning-card>
 </template>

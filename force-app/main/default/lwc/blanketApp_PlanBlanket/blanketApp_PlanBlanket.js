@@ -16,19 +16,41 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
     @api previewBlanket;
     @track listOfAccounts;
     @track listOfBlanketRows;
-    @track listOfBlanketRowsError;
+    @track listOfBlanketRowsError = false;
     index;
+    
 
 
     connectedCallback() {
         this.initData();
-        this.handlePreviewBlanket(null);
         this.previewBlanket = false;
     }
     initData() {
         let listOfAccounts = [];
         this.createRow(listOfAccounts);
+        this.createSampleRows(listOfAccounts);
         this.listOfAccounts = listOfAccounts;
+    }
+    createSampleRows(listOfAccounts){
+        //add two sample rows to listOfAccounts
+        let sampleRows = [
+            {
+                index : listOfAccounts[listOfAccounts.length - 1].index + 1,
+                Min_Temp__c : -100.00,
+                Max_Temp__c : 20,
+                Color__c : '#1158BA',
+                Color_Name__c : 'Blue Whale'
+            },
+            {
+                index : listOfAccounts[listOfAccounts.length - 1].index + 2,
+                Min_Temp__c : 21.00,
+                Max_Temp__c : 200.00,
+                Color__c : '#D0BB76',
+                Color_Name__c : 'Wheat'
+            }
+        ];
+        Array.prototype.push.apply(listOfAccounts, sampleRows);
+        console.log('listOfAccounts --> ' + JSON.stringify(listOfAccounts));
     }
     createRow(listOfAccounts) {
         let accountObject = {};
@@ -41,6 +63,7 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         accountObject.Max_Temp__c = null;
         accountObject.Color__c = null;
         accountObject.Color_Name__c = null;
+        console.log('accountObject --> ' + JSON.stringify(accountObject));
         listOfAccounts.push(accountObject);
     }
     /**
@@ -92,13 +115,28 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         //call wire function to generate blanket rows then
         createBlanketForSchemeAndDateWeather({ colorSchemeItemList: this.listOfAccounts, year: 2022 })
             .then(data => {
-                console.log(JSON.stringify(data));
-                this.listOfBlanketRows = data;
+                //console.log(JSON.stringify(data));
+                let listOfBlanketRows = data;
+                this.setColumnStyle(listOfBlanketRows);
+                this.listOfBlanketRows = listOfBlanketRows;
+                
             })
             .catch(error => {
-                console.log(JSON.stringify(error));
+                //console.log(JSON.stringify(error));
                 this.listOfBlanketRowsError = JSON.stringify(error);
             }); 
+    }
+    setColumnStyle(listOfBlanketRows){
+        console.log('setColumnStyle start');
+        console.log(JSON.stringify(listOfBlanketRows[0]));
+        console.log(JSON.stringify(listOfBlanketRows[0].Color_Scheme_Item__r.Color__c));
+        listOfBlanketRows.forEach((item, index) => {
+            console.log(item);
+            item.columnStyle = 'height: 150px; width: 2px; background-color: ' + item.Color_Scheme_Item__r.Color__c;
+            console.log(item);
+            listOfBlanketRows[index] = item;
+          });
+        console.log('example columnStyle --> ' + listOfBlanketRows[1].columnStyle);
     }
 
 
