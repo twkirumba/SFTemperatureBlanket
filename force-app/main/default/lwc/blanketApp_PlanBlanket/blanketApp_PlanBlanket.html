@@ -1,6 +1,6 @@
 <template>
-    <lightning-card>
-        <lightning-input type="text" label="Name your Color Scheme" value={colorSchemeName}></lightning-input>
+    <lightning-card title="Name Your Color Scheme">
+        <lightning-input type="text" value={colorSchemeName}></lightning-input>
     </lightning-card>
 
     <lightning-card>
@@ -13,7 +13,7 @@
                     <lightning-icon icon-name="standard:account" size="small"></lightning-icon>
                 </div>
                 <div class="slds-media__body slds-card__header-title slds-text-title_bold" style="font-size: 14px">
-                    Account Creation
+                    Color Scheme Builder
                 </div>
             </header>
     
@@ -67,8 +67,10 @@
     
             <!-- Footer -->
             <footer class="slds-modal__footer" style="padding: 0.50rem 1rem;">
-                <lightning-button icon-name="utility:save" variant="brand" label="Preview Blanket" title="Preview Blanket"
+                <lightning-button class="slds-m-left_x-small" variant="neutral" label="Preview Blanket" title="Preview Blanket"
                 onclick={handlePreviewBlanket}></lightning-button>
+                <lightning-button class="slds-m-left_x-small" icon-name="utility:save" variant="brand" label="Save ColorScheme" title="Save Color Scheme"
+                onclick={handleSaveColorScheme}></lightning-button>
             </footer>
         </div>
     
@@ -78,33 +80,37 @@
     -->
     <template lwc:if={previewBlanket}>
         <lightning-card title="Preview Blanket">
-            <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" role="grid">
-                <thead>
-                <tr>
-                    <h3>
-                        Blanket Preview
-                    </h3>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr class="slds-hint-parent" >
-                        <template for:each={listOfBlanketRows} for:item="rec">
-                                <td key={rec.index} style={rec.columnStyle} 
-                                    >
-                                    <SPAN style="writing-mode: vertical-lr;
-                     -ms-writing-mode: tb-rl;
-                     transform: rotate(0deg); color: white;"><lightning-formatted-date-time value={rec.data.DateWeather__r.Date__c}></lightning-formatted-date-time>
-                     &nbsp;
-                         <lightning-formatted-text>
-                            <p> - {rec.data.DateWeather__r.Avg_Temp__c}°F </p>                           
-                         </lightning-formatted-text>
-                         &nbsp;
-                        </SPAN>                                   
-                                </td>
-                        </template>
+            <div style="overflow-x: scroll;">
+                <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" 
+                role="grid"
+                >
+                    <thead>
+                    <tr>
+                        <h3>
+                            Blanket Preview
+                        </h3>
                     </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <tr class="slds-hint-parent" >
+                            <template for:each={listOfBlanketRows} for:item="rec">
+                                    <td key={rec.index} style={rec.columnStyle} 
+                                        >
+                                        <SPAN style="writing-mode: vertical-lr;
+                                                    -ms-writing-mode: tb-rl;
+                                                    transform: rotate(0deg); color: white;"
+                                        >
+                                            <div>
+                                                <p>{rec.data.DateWeather__r.Date__c} : {rec.data.DateWeather__r.Avg_Temp__c}°</p> 
+                                            </div>
+                                        </SPAN>                                   
+                                    </td>
+                            </template>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
         </lightning-card>
         <template lwc:if={listOfBlanketRowsError}>
             <lightning-card title="Error">

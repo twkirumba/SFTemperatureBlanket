@@ -6,6 +6,7 @@ import COLOR_SCHEME_ITEM_MAXTEMP from "@salesforce/schema/Color_Scheme_Item__c.M
 import COLOR_SCHEME_ITEM_COLORHEX from "@salesforce/schema/Color_Scheme_Item__c.Color__c";
 import COLOR_SCHEME_ITEM_COLORNAME from "@salesforce/schema/Color_Scheme_Item__c.Color_Name__c";
 import createBlanketForSchemeAndDateWeather from '@salesforce/apex/BlanketAppService.createBlanketForSchemeAndDateWeather';
+import saveColorScheme from '@salesforce/apex/BlanketAppService.saveColorScheme';
 
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
@@ -115,6 +116,25 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         this.wire_PreviewBlanket();
         
     }
+    handleSaveColorScheme(){
+        saveColorScheme({colorSchemeItemList : this.listOfAccounts, colorSchemeName : this.colorSchemeName})
+            .then(() =>{
+                this.showNotification('Success', 'Color Scheme saved', 'success')
+            })
+            .catch(() => {
+                this.showNotification('Error', 'Color Scheme was not saved', 'error')
+            });
+
+    }
+
+    showNotification(title, message, variant) {
+        const evt = new ShowToastEvent({
+          title: title,
+          message: message,
+          variant: variant,
+        });
+        this.dispatchEvent(evt);
+    }
     wire_PreviewBlanket(){
         createBlanketForSchemeAndDateWeather({ colorSchemeItemList: this.listOfAccounts, year: 2022 })
             .then(data => {
@@ -126,6 +146,7 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
                 this.listOfBlanketRowsError = JSON.stringify(error);
             }); 
     }
+
     createBlanketRows(data){
         console.log('setColumnStyle start');
         console.log(JSON.stringify(data[0]));
@@ -134,7 +155,7 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         data.forEach((item, index) => {
             this.listOfBlanketRows.push({
                 data: item,
-                columnStyle: 'border: 1px solid white; border-collapse: collapse; font-size: 15px; line-height: 1px; height: 200px; width: 1px; background-color: ' + item.Color_Scheme_Item__r.Color__c + ';',
+                columnStyle: 'text-align: center; border: 0.5px solid white; border-collapse: collapse; font-size: 13px; line-height: 0px; height: 350px; max-width: 1%; background-color: ' + item.Color_Scheme_Item__r.Color__c + ';',
                 index: index
             });
             /*

@@ -39,6 +39,20 @@ public with sharing class BlanketAppService {
         return createBlanketForSchemeAndDateWeather(colorSchemeItemList, getDateWeatherByYear(year));
     }
 
+    @AuraEnabled
+    public static void saveColorScheme(List<Color_Scheme_Item__c> colorSchemeItemList, String colorSchemeName){
+        try {
+            Color_Scheme__c colorScheme = New Color_Scheme__c(Name = colorSchemeName);
+            for(Color_Scheme_Item__c cSI : colorSchemeItemList){
+                cSI.Color_Scheme__r = colorScheme;
+            }
+            insert colorScheme;
+            insert colorSchemeItemList;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     public BlanketAppService() {
     }
 }
