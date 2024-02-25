@@ -32,7 +32,7 @@ public with sharing class BlanketAppService {
         );
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<Blanket_Row__c> createBlanketForSchemeAndDateWeather(List<Color_Scheme_Item__c> colorSchemeItemList, Integer year){
         System.debug(colorSchemeItemList);
 

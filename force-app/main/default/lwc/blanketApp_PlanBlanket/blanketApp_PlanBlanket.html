@@ -81,22 +81,25 @@
             <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" role="grid">
                 <thead>
                 <tr>
-                    <th>
+                    <h3>
                         Blanket Preview
-                    </th>
+                    </h3>
                 </tr>
                 </thead>
                 <tbody>
                     <tr class="slds-hint-parent" >
                         <template for:each={listOfBlanketRows} for:item="rec">
-                                <td key={index} style="height: 150px; width: 5px">
+                                <td key={rec.index} style={rec.columnStyle} 
+                                    >
                                     <SPAN style="writing-mode: vertical-lr;
                      -ms-writing-mode: tb-rl;
-                     transform: rotate(0deg);"><lightning-formatted-date-time value={rec.DateWeather__r.Date__c}></lightning-formatted-date-time>
+                     transform: rotate(0deg); color: white;"><lightning-formatted-date-time value={rec.data.DateWeather__r.Date__c}></lightning-formatted-date-time>
                      &nbsp;
-                         <lightning-formatted-number value={rec.DateWeather__r.Avg_Temp__c}></lightning-formatted-number>
+                         <lightning-formatted-text>
+                            <p> - {rec.data.DateWeather__r.Avg_Temp__c}°F </p>                           
+                         </lightning-formatted-text>
                          &nbsp;
-                         <lightning-formatted-text value={rec.Color_Scheme_Item__r.Color__c}></lightning-formatted-text></SPAN>                                   
+                        </SPAN>                                   
                                 </td>
                         </template>
                     </tr>

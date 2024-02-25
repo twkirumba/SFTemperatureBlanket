@@ -106,37 +106,45 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
                 this.listOfAccounts[i][fieldName] = value;
             }
         }
+        if(this.previewBlanket == true){
+            this.wire_PreviewBlanket(null);
+        }
     }
-    handlePreviewBlanket(event){
-        console.log(event);
+    handlePreviewBlanket(){
         this.previewBlanket = !this.previewBlanket;
-        console.log('listOfAccounts');
-        console.log(JSON.stringify(this.listOfAccounts));
-        //call wire function to generate blanket rows then
+        this.wire_PreviewBlanket();
+        
+    }
+    wire_PreviewBlanket(){
         createBlanketForSchemeAndDateWeather({ colorSchemeItemList: this.listOfAccounts, year: 2022 })
             .then(data => {
                 //console.log(JSON.stringify(data));
-                let listOfBlanketRows = data;
-                this.setColumnStyle(listOfBlanketRows);
-                this.listOfBlanketRows = listOfBlanketRows;
-                
+                this.createBlanketRows(data);
             })
             .catch(error => {
                 //console.log(JSON.stringify(error));
                 this.listOfBlanketRowsError = JSON.stringify(error);
             }); 
     }
-    setColumnStyle(listOfBlanketRows){
+    createBlanketRows(data){
         console.log('setColumnStyle start');
-        console.log(JSON.stringify(listOfBlanketRows[0]));
-        console.log(JSON.stringify(listOfBlanketRows[0].Color_Scheme_Item__r.Color__c));
-        listOfBlanketRows.forEach((item, index) => {
+        console.log(JSON.stringify(data[0]));
+        console.log(JSON.stringify(data[0].Color_Scheme_Item__r.Color__c));
+        this.listOfBlanketRows = [];
+        data.forEach((item, index) => {
+            this.listOfBlanketRows.push({
+                data: item,
+                columnStyle: 'border: 1px solid white; border-collapse: collapse; font-size: 15px; line-height: 1px; height: 200px; width: 1px; background-color: ' + item.Color_Scheme_Item__r.Color__c + ';',
+                index: index
+            });
+            /*
             console.log(item);
             item.columnStyle = 'height: 150px; width: 2px; background-color: ' + item.Color_Scheme_Item__r.Color__c;
             console.log(item);
-            listOfBlanketRows[index] = item;
+            data[index] = item;
+            */
           });
-        console.log('example columnStyle --> ' + listOfBlanketRows[1].columnStyle);
+        console.log('example columnStyle --> ' + this.listOfBlanketRows[1].columnStyle);
     }
 
 
