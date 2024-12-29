@@ -1,4 +1,5 @@
 import { LightningElement, api, wire, track } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import COLOR_SCHEME_NAME from "@salesforce/schema/Color_Scheme__c.Name";
 import COLOR_SCHEME_ITEM_NAME from "@salesforce/schema/Color_Scheme_Item__c.Name";
 import COLOR_SCHEME_ITEM_MINTEMP from "@salesforce/schema/Color_Scheme_Item__c.Min_Temp__c";
@@ -7,20 +8,21 @@ import COLOR_SCHEME_ITEM_COLORHEX from "@salesforce/schema/Color_Scheme_Item__c.
 import COLOR_SCHEME_ITEM_COLORNAME from "@salesforce/schema/Color_Scheme_Item__c.Color_Name__c";
 import createBlanketForSchemeAndDateWeather from '@salesforce/apex/BlanketAppService.createBlanketForSchemeAndDateWeather';
 import saveColorScheme from '@salesforce/apex/BlanketAppService.saveColorScheme';
+import getColorSchemesWithItemsById from '@salesforce/apex/BlanketAppService.getColorSchemesWithItemsById';
 
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
 
-export default class BlanketApp_PlanBlanket extends LightningElement {
+export default class BlanketApp_PlanBlanket extends NavigationMixin(LightningElement) {
 
-    @api colorSchemeName;
+    colorSchemeName;
+    url;
     @api previewBlanket;
     @track listOfAccounts;
     @track listOfBlanketRows;
     @track listOfBlanketRowsError = false;
     index;
-    
-
+    @api recordId;
 
     connectedCallback() {
         this.initData();
@@ -28,9 +30,39 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
     }
     initData() {
         let listOfAccounts = [];
+        if(this.recordId) {
+            this.loadDatafromRecordId();
+        }
+        else{
         this.createRow(listOfAccounts);
         this.createSampleRows(listOfAccounts);
         this.listOfAccounts = listOfAccounts;
+        }
+    }
+    loadDatafromRecordId(){
+        //wire_service: query colorscheme with colorschemeItems
+        getColorSchemesWithItemsById({colorSchemeId: this.recordId})
+            .then((data) => {
+                this.colorSchemeName = data.Name;
+                this.setListOfAccounts(data.Color_Scheme_Items__r)                
+                console.log(data);
+                console.log(JSON.stringify(data));
+                console.dir(JSON.stringify(data));
+            })
+            .catch((error) => {
+                console.dir(error);
+                this.showNotification('Error', 'Failed to load color scheme', 'error')
+            });
+    }
+    setListOfAccounts(colorSchemeItems){
+        this.listOfAccounts = colorSchemeItems.map((item, index) => ({
+            index: index,
+            Min_Temp__c: parseFloat(item.Min_Temp__c.toFixed(2)),
+            Max_Temp__c: parseFloat(item.Max_Temp__c.toFixed(2)),
+            Color__c: item.Color__c,
+            Color_Name__c: item.Color_Name__c,
+            Id: item.Id
+        }));
     }
     createSampleRows(listOfAccounts){
         //add two sample rows to listOfAccounts
@@ -98,6 +130,9 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         this.createRow(listOfAccounts);
         this.listOfAccounts = listOfAccounts;
     }
+    handleNameChange(event){
+        this.colorSchemeName = event.target.value;
+    }
     handleInputChange(event) {
         let index = event.target.dataset.id;
         let fieldName = event.target.name;
@@ -112,21 +147,45 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         }
     }
     handlePreviewBlanket(){
-        this.previewBlanket = !this.previewBlanket;
-        this.wire_PreviewBlanket();
-        
+        this.previewBlanket = !this.previewBlanket;        
     }
+    //TODO: If recordId, change this to update the existing record. 
     handleSaveColorScheme(){
-        saveColorScheme({colorSchemeItemList : this.listOfAccounts, colorSchemeName : this.colorSchemeName})
-            .then(() =>{
-                this.showNotification('Success', 'Color Scheme saved', 'success')
+        saveColorScheme({colorSchemeItemList : this.listOfAccounts, colorSchemeName : this.colorSchemeName, recordId: this.recordId})
+            .then((data) =>{
+                this.showSuccessMessage(data.Id);
+                //use navigationmixing to construct a url to the created record
+                //this.url = this.createRecordURL(data.Id);
+                //this.showNotification('Success', 'Color Scheme saved. <a href="${url}">View Record</a>', 'success');
             })
-            .catch(() => {
+            .catch((error) => {
+                console.dir(error);
                 this.showNotification('Error', 'Color Scheme was not saved', 'error')
             });
 
     }
-
+    showSuccessMessage(recordId){
+        this[NavigationMixin.GenerateUrl]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                actionName: 'view',
+            },
+        }).then((url) => {
+            const event = new ShowToastEvent({
+                title: 'Success!',
+                message: 'Color Scheme Saved: {0}',
+                messageData: [
+                    {
+                        url,
+                        label: 'View Record',
+                    },
+                ],
+                variant: 'success'
+            });
+            this.dispatchEvent(event);
+        });
+    }
     showNotification(title, message, variant) {
         const evt = new ShowToastEvent({
           title: title,
@@ -135,38 +194,4 @@ export default class BlanketApp_PlanBlanket extends LightningElement {
         });
         this.dispatchEvent(evt);
     }
-    wire_PreviewBlanket(){
-        createBlanketForSchemeAndDateWeather({ colorSchemeItemList: this.listOfAccounts, year: 2022 })
-            .then(data => {
-                //console.log(JSON.stringify(data));
-                this.createBlanketRows(data);
-            })
-            .catch(error => {
-                //console.log(JSON.stringify(error));
-                this.listOfBlanketRowsError = JSON.stringify(error);
-            }); 
-    }
-
-    createBlanketRows(data){
-        console.log('setColumnStyle start');
-        console.log(JSON.stringify(data[0]));
-        console.log(JSON.stringify(data[0].Color_Scheme_Item__r.Color__c));
-        this.listOfBlanketRows = [];
-        data.forEach((item, index) => {
-            this.listOfBlanketRows.push({
-                data: item,
-                columnStyle: 'text-align: center; border: 0.5px solid white; border-collapse: collapse; font-size: 13px; line-height: 0px; height: 350px; max-width: 1%; background-color: ' + item.Color_Scheme_Item__r.Color__c + ';',
-                index: index
-            });
-            /*
-            console.log(item);
-            item.columnStyle = 'height: 150px; width: 2px; background-color: ' + item.Color_Scheme_Item__r.Color__c;
-            console.log(item);
-            data[index] = item;
-            */
-          });
-        console.log('example columnStyle --> ' + this.listOfBlanketRows[1].columnStyle);
-    }
-
-
 }

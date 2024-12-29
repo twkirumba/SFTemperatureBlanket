@@ -1,0 +1,37 @@
+<template>
+    <lightning-card>
+        <div style="overflow-x: scroll;">
+            <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" 
+            role="grid"
+            >
+                <thead>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" >
+                        <template for:each={listOfBlanketRows} for:item="rec">
+                                <td key={rec.index} style={rec.columnStyle} 
+                                    >
+                                    <SPAN style="writing-mode: vertical-lr;
+                                                transform: rotate(0deg); color: white;"
+                                    >
+                                        <div>
+                                            <p>
+                                                {rec.data.DateWeather__r.Date__c} ----------- {rec.data.DateWeather__r.Avg_Temp__c}°F - {rec.data.Color_Scheme_Item__r.Color_Name__c}
+                                            </p> 
+                                        </div>
+                                    </SPAN>                                   
+                                </td>
+                        </template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </lightning-card>
+    <template lwc:if={listOfBlanketRowsError}>
+        <lightning-card title="Error">
+            {listOfBlanketRowsError}
+        </lightning-card>
+    </template>
+    
+</template>

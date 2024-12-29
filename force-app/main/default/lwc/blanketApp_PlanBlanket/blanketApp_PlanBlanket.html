@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Name Your Color Scheme">
-        <lightning-input type="text" value={colorSchemeName}></lightning-input>
+        <lightning-input type="text" value={colorSchemeName} onchange={handleNameChange}></lightning-input>
     </lightning-card>
 
     <lightning-card>
@@ -75,52 +75,14 @@
         </div>
     
     </lightning-card>
-    <!--
-        Preview Component to show the blanket for a given year and your color scheme
-    -->
     <template lwc:if={previewBlanket}>
-        <lightning-card title="Preview Blanket">
-            <div style="overflow-x: scroll;">
-                <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" 
-                role="grid"
-                >
-                    <thead>
-                    <tr>
-                        <h3>
-                            Blanket Preview
-                        </h3>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="slds-hint-parent" >
-                            <template for:each={listOfBlanketRows} for:item="rec">
-                                    <td key={rec.index} style={rec.columnStyle} 
-                                        >
-                                        <SPAN style="writing-mode: vertical-lr;
-                                                    -ms-writing-mode: tb-rl;
-                                                    transform: rotate(0deg); color: white;"
-                                        >
-                                            <div>
-                                                <p>{rec.data.DateWeather__r.Date__c} : {rec.data.DateWeather__r.Avg_Temp__c}°</p> 
-                                            </div>
-                                        </SPAN>                                   
-                                    </td>
-                            </template>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-        </lightning-card>
-        <template lwc:if={listOfBlanketRowsError}>
-            <lightning-card title="Error">
-                {listOfBlanketRowsError}
-            </lightning-card>
-        </template>
-        
+        <div class="slds-media__body slds-card__header-title slds-text-title_bold" style="font-size: 14px">
+            Preview Blanket
+        </div>
+        <c-blanket-app-_-Preview
+            list-of-accounts= {listOfAccounts}
+            year="2024"
+        >
+        </c-blanket-app-_-Preview>
     </template>
-    
-    <!--
-        Save/Cancel
-    -->
 </template>

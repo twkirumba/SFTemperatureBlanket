@@ -5,7 +5,8 @@ public with sharing class BlanketAppService {
         Date maxDate = minDate.addYears(+1).addDays(-1);
         return [SELECT Id, Date__c, Avg_Temp__c 
                 FROM DateWeather__c 
-                WHERE Date__c >= :minDate AND Date__c <= :maxDate ];
+                WHERE Date__c >= :minDate AND Date__c <= :maxDate 
+                ORDER BY Date__c ASC];
     }
 
 
@@ -34,21 +35,33 @@ public with sharing class BlanketAppService {
 
     @AuraEnabled(cacheable=false)
     public static List<Blanket_Row__c> createBlanketForSchemeAndDateWeather(List<Color_Scheme_Item__c> colorSchemeItemList, Integer year){
-        System.debug(colorSchemeItemList);
-
         return createBlanketForSchemeAndDateWeather(colorSchemeItemList, getDateWeatherByYear(year));
     }
 
     @AuraEnabled
-    public static void saveColorScheme(List<Color_Scheme_Item__c> colorSchemeItemList, String colorSchemeName){
+    public static Color_Scheme__c saveColorScheme(List<Color_Scheme_Item__c> colorSchemeItemList, String colorSchemeName, Id recordId){
         try {
             Color_Scheme__c colorScheme = New Color_Scheme__c(Name = colorSchemeName);
-            for(Color_Scheme_Item__c cSI : colorSchemeItemList){
-                cSI.Color_Scheme__r = colorScheme;
+            if(recordId != null){
+                colorScheme.Id = recordId;
             }
-            insert colorScheme;
-            insert colorSchemeItemList;
+            upsert colorScheme;
+            for(Color_Scheme_Item__c cSI : colorSchemeItemList){
+                cSI.Color_Scheme__c = colorScheme.Id;
+            }
+            upsert colorSchemeItemList;
+            return colorScheme;
         } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable = true)
+    public static Color_Scheme__c getColorSchemesWithItemsById(Id colorSchemeId){
+        try{
+            Color_Scheme__c colorScheme = [SELECT Id, Name, (SELECT Id, Color_Scheme__c, Min_Temp__c, Max_Temp__c, Color__c, Color_Name__c FROM Color_Scheme_Items__r) FROM Color_Scheme__c WHERE Id = :colorSchemeId];
+            return colorScheme;
+        }catch(Exception e){
             throw new AuraHandledException(e.getMessage());
         }
     }

@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="Color By Date">
+        <div  style="background-color: #f79435">
+            <div class="container">
+                <div class="column">
+                    <div class="slds-m-vertical_medium">
+                        <lightning-input 
+                            type="date" 
+                            value={colorDate} 
+                            label="Date" 
+                            onchange={handleDateChange}
+                            variant="label-hidden"
+                        >
+                        </lightning-input>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="slds-m-vertical_medium">
+                        <p>Avg. Temp: <span class="slds-text-heading_small">{avgTemp}</span></p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="slds-m-vertical_medium">
+                        <p>Color Name: <span class="slds-text-heading_small">{colorName}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
