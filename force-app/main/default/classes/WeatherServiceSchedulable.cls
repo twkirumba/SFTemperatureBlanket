@@ -4,10 +4,11 @@ public with sharing class WeatherServiceSchedulable implements Schedulable {
     private Date fromDate;
     private Date toDate;
 
-    public WeatherServiceSchedulable(String zipCode, Date fromDate, Date toDate) {
-        this.zipCode = zipCode;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
+    public WeatherServiceSchedulable() {
+        //Calls weather service to get yesterday's weather data
+        this.zipCode = '01562';
+        this.fromDate = Date.today().addDays(-1);
+        this.toDate = fromDate;
     }
 
     public void execute(SchedulableContext sc) {

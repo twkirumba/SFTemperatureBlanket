@@ -14,10 +14,19 @@
                                     <SPAN style="writing-mode: vertical-lr;
                                                 transform: rotate(0deg); color: white;"
                                     >
-                                        <div>
-                                            <p>
-                                                {rec.data.DateWeather__r.Date__c} ----------- {rec.data.DateWeather__r.Avg_Temp__c}°F - {rec.data.Color_Scheme_Item__r.Color_Name__c}
-                                            </p> 
+                                        <div class="container">
+                                            <div class="column">
+                                                <div>
+                                                    <p>{rec.data.DateWeather__r.Date__c}</p>
+                                                </div>
+                                            </div>
+                                            <div class="column">
+                                            </div>
+                                            <div class="column">
+                                                <div>
+                                                    <p>{rec.data.DateWeather__r.Avg_Temp__c}°F - {rec.data.Color_Scheme_Item__r.Color_Name__c}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </SPAN>                                   
                                 </td>

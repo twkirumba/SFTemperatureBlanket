@@ -30,6 +30,19 @@ public with sharing class WeatherService {
         }
     }
 
+    //TODO: This could cause bugs because of the zip code if there are multiple users. 
+    @AuraEnabled(cacheable=true)
+    public static DateWeather__c getDateWeatherByDate(String dateString){
+        try {
+            Date dt = Date.valueOf(dateString);
+            return [SELECT Id, Date__c, Avg_Temp__c
+                    FROM DateWeather__c 
+                    WHERE Date__c = :dt];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     /**
      * Parse weather data from the JSON response.
      * @param responseBody The JSON response body.

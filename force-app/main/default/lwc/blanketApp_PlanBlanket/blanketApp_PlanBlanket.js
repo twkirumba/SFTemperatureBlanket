@@ -23,6 +23,9 @@ export default class BlanketApp_PlanBlanket extends NavigationMixin(LightningEle
     @track listOfBlanketRowsError = false;
     index;
     @api recordId;
+    baseYear = 2024;
+    compareYear;
+    compareYears = false;
 
     connectedCallback() {
         this.initData();
@@ -31,7 +34,7 @@ export default class BlanketApp_PlanBlanket extends NavigationMixin(LightningEle
     initData() {
         let listOfAccounts = [];
         if(this.recordId) {
-            this.loadDatafromRecordId();
+            this.loadDataFromRecordId();
         }
         else{
         this.createRow(listOfAccounts);
@@ -39,7 +42,7 @@ export default class BlanketApp_PlanBlanket extends NavigationMixin(LightningEle
         this.listOfAccounts = listOfAccounts;
         }
     }
-    loadDatafromRecordId(){
+    loadDataFromRecordId(){
         //wire_service: query colorscheme with colorschemeItems
         getColorSchemesWithItemsById({colorSchemeId: this.recordId})
             .then((data) => {
@@ -132,6 +135,12 @@ export default class BlanketApp_PlanBlanket extends NavigationMixin(LightningEle
     }
     handleNameChange(event){
         this.colorSchemeName = event.target.value;
+    }
+    handleYearChange(event){
+        this[event.target.name] = event.target.value;
+    }
+    handleCompareYears(event){
+        this.compareYears = !this.compareYears;
     }
     handleInputChange(event) {
         let index = event.target.dataset.id;

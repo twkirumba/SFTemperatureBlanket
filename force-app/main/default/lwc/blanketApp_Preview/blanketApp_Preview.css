@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    justify-content: space-between; /* Adjust spacing between the columns */
+    align-items: center; /* Align items vertically */
+}
+
+.column {
+    flex: 1; /* Makes both columns take up equal space */
+    padding: 2px; /* Optional: Add padding for better spacing */
+    text-align: left; /* Align text to center within the column */
+}

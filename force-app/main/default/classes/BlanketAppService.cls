@@ -16,7 +16,7 @@ public with sharing class BlanketAppService {
         //iterate through dateWeatherList
         for(DateWeather__c dW : dateWeatherList){
             for(Color_Scheme_Item__c cSI : colorSchemeItemList){
-                if(dW.Avg_Temp__c >= cSI.Min_Temp__c && dW.Avg_Temp__c <= cSI.Max_Temp__c){
+                if(Math.round(dW.Avg_Temp__c) >= cSI.Min_Temp__c && Math.round(dW.Avg_Temp__c) <= cSI.Max_Temp__c){
                     blanketRowList.add(createBlanketRow(dW, cSI));
                     break;
                 }

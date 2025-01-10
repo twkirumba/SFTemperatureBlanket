@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="Color By Date">
-        <div  style="background-color: #f79435">
+        <div  style={colorDateStyle}>
             <div class="container">
                 <div class="column">
                     <div class="slds-m-vertical_medium">
@@ -14,17 +14,26 @@
                         </lightning-input>
                     </div>
                 </div>
-                <div class="column">
+                <div class="column" >
                     <div class="slds-m-vertical_medium">
-                        <p>Avg. Temp: <span class="slds-text-heading_small">{avgTemp}</span></p>
+                        <p>Avg. Temp: <span class="slds-text-heading_small" style="color: white;">{avgTemp}</span></p>
                     </div>
                 </div>
-                <div class="column">
+                <div class="column" >
                     <div class="slds-m-vertical_medium">
-                        <p>Color Name: <span class="slds-text-heading_small">{colorName}</span></p>
+                        <p>Color Name: <span class="slds-text-heading_small" style="color: white;">{colorName}</span></p>
                     </div>
                 </div>
             </div>
         </div>
+    </lightning-card>
+    <lightning-card title="Blanket Preview (Year-To-Date)">
+        <template lwc:if={previewBlanket}>
+            <c-blanket-app-_-preview
+            list-of-accounts= {listOfAccounts}
+            year= {year}
+            >
+            </c-blanket-app-_-preview>
+        </template>
     </lightning-card>
 </template>
