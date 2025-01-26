@@ -6,6 +6,23 @@ public with sharing class WeatherService {
     private static final String API_KEY = 'SPHYUYJGSBHXYPPY4DAP9Q6FJ';
 
     /**
+     * Invocable method to fetch weather data from a Flow.
+     * @param request List of ZipCodeDateRange objects containing ZIP code and date range.
+     * @return List of List<DateWeather__c> containing the fetched weather data.
+     */
+    @InvocableMethod(label='Fetch Weather Data' description='Fetches weather data for the specified ZIP code and date range.')
+    public static List<List<DateWeather__c>> fetchWeatherDataFromFlow(List<ZipCodeDateRange> request) {
+        List<List<DateWeather__c>> result = new List<List<DateWeather__c>>();
+        for (ZipCodeDateRange zipCodeDateRange : request) {
+            String zipCode = zipCodeDateRange.zipCode;
+            Date fromDate = zipCodeDateRange.fromDate;
+            Date toDate = zipCodeDateRange.toDate;
+            result.add(fetchWeatherData(zipCode, fromDate, toDate));
+        }
+        return result;
+    }
+
+    /**
      * Fetch weather data for the last 15 days for a given ZIP code.
      * @param zipCode The ZIP code to fetch weather data for.
      * @return List of DateWeather objects parsed from the response.
@@ -75,5 +92,17 @@ public with sharing class WeatherService {
         // Insert records in Salesforce
         upsert weatherRecords ExternalId__c; // Use an External ID field for upsert
         return weatherRecords;
+    }
+
+    /**
+     * Inner class representing a ZIP code and date range.
+     */
+    public class ZipCodeDateRange {
+        @InvocableVariable(label='ZIP Code' required=true)
+        public String zipCode;
+        @InvocableVariable(label='From Date' required=true)
+        public Date fromDate;
+        @InvocableVariable(label='To Date' required=true)
+        public Date toDate;
     }
 }

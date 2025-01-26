@@ -12,7 +12,17 @@ public with sharing class WeatherServiceSchedulable implements Schedulable {
     }
 
     public void execute(SchedulableContext sc) {
+        //Calls weather service to get yesterday's weather data
+        this.zipCode = '01562';
+        this.fromDate = Date.today().addDays(-1);
+        this.toDate = fromDate;
+
         // Call the fetchWeatherData method of the WeatherService class
-        WeatherService.fetchWeatherData(this.zipCode, this.fromDate, this.toDate);
+        fetchWeatherDataAsync(this.zipCode, this.fromDate, this.toDate);
+    }
+
+    @future(callout=true)
+    private static void fetchWeatherDataAsync(String zipCode, Date fromDate, Date toDate) {
+        WeatherService.fetchWeatherData(zipCode, fromDate, toDate);
     }
 }
