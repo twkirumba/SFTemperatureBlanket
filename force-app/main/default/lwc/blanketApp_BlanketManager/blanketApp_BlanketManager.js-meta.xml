@@ -10,6 +10,10 @@
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
             <property name="recordId" label="Record Id" type="String"/>
+            <supportedFormFactors>
+            <supportedFormFactor type="Small"/>
+            <supportedFormFactor type="Large"/>
+            </supportedFormFactors>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
