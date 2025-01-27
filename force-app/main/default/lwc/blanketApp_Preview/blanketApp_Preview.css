@@ -9,3 +9,16 @@
     padding: 2px; /* Optional: Add padding for better spacing */
     text-align: left; /* Align text to center within the column */
 }
+.cell-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.checkbox-container {
+    position: absolute;
+    top: 4px;
+    right: -8px;
+    z-index: 1;
+    padding: 2px;
+}

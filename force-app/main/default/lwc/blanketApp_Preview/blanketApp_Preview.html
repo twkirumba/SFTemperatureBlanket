@@ -9,26 +9,41 @@
                 <tbody>
                     <tr class="slds-hint-parent" >
                         <template for:each={listOfBlanketRows} for:item="rec">
-                                <td key={rec.index} style={rec.columnStyle} 
-                                    >
-                                    <SPAN style="writing-mode: vertical-lr;
-                                                transform: rotate(0deg);"
-                                    >
-                                        <div class="container">
-                                            <div class="column">
-                                                <div>
-                                                    <p>{rec.data.DateWeather__r.Date__c}</p>
+                                <td key={rec.index} 
+                                    style={rec.columnStyle}
+                                    onmouseenter={handleCellHover}
+                                    onmouseleave={handleCellLeave}
+                                    data-date={rec.data.DateWeather__r.Date__c} 
+                                >
+                                    <div class="cell-container">
+                                        <template if:true={rec.showCheckbox}>
+                                            <div class="checkbox-container slds-p-around_medium lgc-bg slds-grid slds-grid_align-start slds-grid_vertical-align-center">
+                                                <lightning-helptext content="Select to set last knit date"></lightning-helptext>
+                                                <lightning-input 
+                                                    type="checkbox"
+                                                    data-date={rec.data.DateWeather__r.Date__c}
+                                                    onchange={handleDateSelection}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                        <SPAN style={rec.textStyle}
+                                        >
+                                            <div class="container">
+                                                <div class="column">
+                                                    <div>
+                                                        <p>{rec.data.DateWeather__r.Date__c}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="column">
+                                                </div>
+                                                <div class="column">
+                                                    <div>
+                                                        <p>{rec.data.DateWeather__r.Avg_Temp__c}°F - {rec.data.Color_Scheme_Item__r.Color_Name__c}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="column">
-                                            </div>
-                                            <div class="column">
-                                                <div>
-                                                    <p>{rec.data.DateWeather__r.Avg_Temp__c}°F - {rec.data.Color_Scheme_Item__r.Color_Name__c}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </SPAN>                                   
+                                        </SPAN>
+                                    </div>                                   
                                 </td>
                         </template>
                     </tr>

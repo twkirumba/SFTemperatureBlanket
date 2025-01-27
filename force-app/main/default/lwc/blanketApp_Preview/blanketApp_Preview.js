@@ -12,10 +12,8 @@ export default class BlanketApp_Preview extends LightningElement {
     }
     set lastKnitDateInput(value){
         this._lastKnitDateInput = value;
-        try{
+        if(this.blanketRowData){
             this.createBlanketRows();
-        }catch(e){
-            console.log(e);
         }
     }
     blanketRowData;
@@ -23,11 +21,11 @@ export default class BlanketApp_Preview extends LightningElement {
     listOfBlanketRowsError;
 
     connectedCallback(){
-        this.wire_PreviewBlanket();
         console.log('knitDateInput: ' + this._lastKnitDateInput);
         if(!this._lastKnitDateInput){
             this._lastKnitDateInput = new Date();
         }
+        this.wire_PreviewBlanket();
     }
 
     wire_PreviewBlanket(){
@@ -52,24 +50,21 @@ export default class BlanketApp_Preview extends LightningElement {
             const rowDate = new Date(item.DateWeather__r.Date__c);
             console.log('rowDate: ' + rowDate);
             console.log(rowDate <= lastKnitDate);
-            const backgroundColor = item.Color_Scheme_Item__r.Color__c;
+            const borderColor = item.Color_Scheme_Item__r.Color__c;
+            const backgroundColor = rowDate <= lastKnitDate ? borderColor : '#FFFFFF';
             const textColor = this.getTextColor(backgroundColor);
+            const textDecoration = ''; //rowDate <= lastKnitDate ? 'line-through' : '';
             
             // Style based on date comparison
-            const cellStyle = rowDate <= lastKnitDate ? 
-                // Style for past/current dates - full color as before
-                `text-align: left; border: 0.5px solid white; border-collapse: collapse; 
+            const cellStyle = `text-align: left; border: 5px ${borderColor}; border-collapse: collapse; 
                  font-size: 13px; line-height: 1; height: 350px; max-width: 1%; 
-                 padding: 2px; background-color: ${backgroundColor}; color: ${textColor};` :
-                // Style for future dates - white background with colored border
-                `text-align: left; border: 10px solid ${backgroundColor}; border-collapse: collapse; 
-                 font-size: 13px; line-height: 1; height: 350px; max-width: 1%; 
-                 padding: 2px; background-color: white; color: black;`;
+                 padding: 2px; background-color: ${backgroundColor}; color: ${textColor};`;
     
             this.listOfBlanketRows.push({
                 data: item,
                 columnStyle: cellStyle,
-                index: index
+                index: index,
+                textStyle: `writing-mode: vertical-lr; transform: rotate(0deg); text-decoration: ${textDecoration};`,
             });
         });
     }
@@ -85,5 +80,34 @@ export default class BlanketApp_Preview extends LightningElement {
         
         // Return black for light backgrounds, white for dark
         return luminance > 0.5 ? '#000000' : '#FFFFFF';
+    }
+
+    handleCellHover(event) {
+        const date = event.currentTarget.dataset.date;
+        this.listOfBlanketRows = this.listOfBlanketRows.map(row => {
+            if (row.data.DateWeather__r.Date__c === date) {
+                return { ...row, showCheckbox: true };
+            }
+            return row;
+        });
+    }
+
+    handleCellLeave(event) {
+        const date = event.currentTarget.dataset.date;
+        this.listOfBlanketRows = this.listOfBlanketRows.map(row => {
+            if (row.data.DateWeather__r.Date__c === date) {
+                return { ...row, showCheckbox: false };
+            }
+            return row;
+        });
+    }
+    handleDateSelection(event){
+        console.log('handleDateSelection: ' + JSON.stringify(event.target.dataset));
+        const selectedDate = event.target.dataset.date;
+        this.dispatchEvent(new CustomEvent('lastknitdatechange', {
+            detail: selectedDate
+        }));
+        this.lastKnitDateInput = new Date(selectedDate);
+
     }
 }
