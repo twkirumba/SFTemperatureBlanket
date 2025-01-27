@@ -56,7 +56,7 @@ export default class BlanketApp_Preview extends LightningElement {
             const textDecoration = ''; //rowDate <= lastKnitDate ? 'line-through' : '';
             
             // Style based on date comparison
-            const cellStyle = `text-align: left; border: 5px ${borderColor}; border-collapse: collapse; 
+            const cellStyle = `text-align: left; border: 10px solid ${borderColor}; border-collapse: collapse; 
                  font-size: 13px; line-height: 1; height: 350px; max-width: 1%; 
                  padding: 2px; background-color: ${backgroundColor}; color: ${textColor};`;
     

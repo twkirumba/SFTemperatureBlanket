@@ -18,7 +18,8 @@
 .checkbox-container {
     position: absolute;
     top: 4px;
-    right: -8px;
+    right: -20px;
     z-index: 1;
     padding: 2px;
+    border: 2px;
 }
