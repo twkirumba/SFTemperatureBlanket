@@ -1,7 +1,12 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import getColorSchemesWithItemsById from '@salesforce/apex/BlanketAppService.getColorSchemesWithItemsById';
 import getDateWeatherByDate from '@salesforce/apex/WeatherService.getDateWeatherByDate';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
+import { getRecord, updateRecord } from 'lightning/uiRecordApi';
+
+const FIELDS = [
+    'Color_Scheme__c.Last_Knit_Date__c'
+];
 
 
 
@@ -9,6 +14,8 @@ import {ShowToastEvent} from "lightning/platformShowToastEvent";
 export default class BlanketApp_BlanketManager extends LightningElement {
 
     @api recordId;
+    recordData;
+    error;
     colorDate;
     colorDateStyle;
     avgTemp;
@@ -19,6 +26,10 @@ export default class BlanketApp_BlanketManager extends LightningElement {
     year;
     getWeatherByDateViaApex = false;
 
+    get lastKnitDate(){
+        return this.recordData?.fields.Last_Knit_Date__c.value;
+    }
+
     connectedCallback(){
         this.colorDate = new Date().toISOString();
         this.year = new Date().getFullYear();
@@ -26,6 +37,22 @@ export default class BlanketApp_BlanketManager extends LightningElement {
         this.listOfAccountsJSON = JSON.stringify(this.listOfAccounts);
         console.dir(this.listOfAccounts);
         this.setColorDateStyle();
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
+    wiredRecord({ error, data }) {
+        if (data) {
+            console.log(JSON.stringify(data));
+            this.recordData = data; // Store the retrieved record data
+            this.error = undefined;
+        } else if (error) {
+            this.error = error; // Handle the error
+            this.recordData = {fields: {
+                Last_Knit_Date__c : {
+                    value: new Date(new Date().getFullYear(), 0, 1)
+                }
+            }};
+        }
     }
 
     setColorDateStyle(){
@@ -98,6 +125,7 @@ export default class BlanketApp_BlanketManager extends LightningElement {
         }
         return dateWeatherAPI;
     }
+
     fetchWeatherData(dateString) {
         const apiKey = 'SPHYUYJGSBHXYPPY4DAP9Q6FJ';
         const url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/01562/' + dateString + '/' + dateString + '?unitGroup=us&elements=datetime%2Ctemp&include=days%2Cobs&key=' + apiKey + '&contentType=json';
@@ -119,4 +147,24 @@ export default class BlanketApp_BlanketManager extends LightningElement {
             return {error: error.message };
         });
     }
+
+    handleLastKnitDateChange(event) {
+        //update the record's Last_Knit_Date__c from the event detail
+        console.log(JSON.stringify(event));
+        const fields = {};
+        fields['Id'] = this.recordId;
+        fields['Last_Knit_Date__c'] = event.detail;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+        .then(() => {
+            this.showNotification('Success', `Last Knit Date successfully updated to ${event.detail}`, 'success');
+        })
+        .catch(error => {
+            this.showNotification('Error', 'Failed to update Last Knit Date', 'error');
+            console.error('Error updating record: ', error);
+        });
+    }
+
 }
