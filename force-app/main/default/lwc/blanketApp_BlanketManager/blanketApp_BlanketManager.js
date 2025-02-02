@@ -25,6 +25,7 @@ export default class BlanketApp_BlanketManager extends LightningElement {
     @track listOfAccountsJSON;
     year;
     getWeatherByDateViaApex = false;
+    fontColor;
 
     get lastKnitDate(){
         return this.recordData?.fields.Last_Knit_Date__c.value;
@@ -64,6 +65,8 @@ export default class BlanketApp_BlanketManager extends LightningElement {
                 let matchingColorScheme = this.getColorForTemperature(this.avgTemp);
                 this.colorDateStyle = 'background-color: ' + matchingColorScheme.Color__c;
                 this.colorName = matchingColorScheme.Color_Name__c;
+                this.fontColor = `color: ${this.getTextColor(matchingColorScheme.Color__c)};`;
+                console.log(this.fontColor);
             })
             .catch(error => {
                 console.dir(error);
@@ -165,6 +168,19 @@ export default class BlanketApp_BlanketManager extends LightningElement {
             this.showNotification('Error', 'Failed to update Last Knit Date', 'error');
             console.error('Error updating record: ', error);
         });
+    }
+
+    getTextColor(backgroundColor) {
+        // Convert hex to RGB
+        const r = parseInt(backgroundColor.substr(1,2), 16);
+        const g = parseInt(backgroundColor.substr(3,2), 16);
+        const b = parseInt(backgroundColor.substr(5,2), 16);
+        
+        // Calculate luminance
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        
+        // Return black for light backgrounds, white for dark
+        return luminance > 0.5 ? '#000000' : '#FFFFFF';
     }
 
 }
