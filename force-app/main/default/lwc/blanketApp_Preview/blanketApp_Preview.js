@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import formFactorPropertyName from "@salesforce/client/formFactor";
 import createBlanketForSchemeAndDateWeather from '@salesforce/apex/BlanketAppService.createBlanketForSchemeAndDateWeather';
 
 
@@ -56,8 +57,8 @@ export default class BlanketApp_Preview extends LightningElement {
             const textDecoration = ''; //rowDate <= lastKnitDate ? 'line-through' : '';
             
             // Style based on date comparison
-            const cellStyle = `text-align: left; border: 10px solid ${borderColor}; border-collapse: collapse; 
-                 font-size: 13px; line-height: 1; height: 350px; max-width: 1%; 
+            const cellStyle = `text-align: left; border: ${formFactorPropertyName == 'Large' ? '10px' : '3px'} solid ${borderColor}; border-collapse: collapse; 
+                 font-size: 13px; line-height: 1; height: 350px; min-width: ${formFactorPropertyName == 'Large' ? '1%' : '100%'}; 
                  padding: 2px; background-color: ${backgroundColor}; color: ${textColor};`;
     
             this.listOfBlanketRows.push({
