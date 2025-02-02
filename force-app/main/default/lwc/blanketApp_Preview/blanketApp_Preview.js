@@ -58,7 +58,7 @@ export default class BlanketApp_Preview extends LightningElement {
             
             // Style based on date comparison
             const cellStyle = `text-align: left; border: ${formFactorPropertyName == 'Large' ? '10px' : '3px'} solid ${borderColor}; border-collapse: collapse; 
-                 font-size: 13px; line-height: 1; height: 350px; min-width: ${formFactorPropertyName == 'Large' ? '1%' : '100%'}; 
+                 font-size: 13px; line-height: 1; height: 350px; min-width : 50px; 
                  padding: 2px; background-color: ${backgroundColor}; color: ${textColor};`;
     
             this.listOfBlanketRows.push({
