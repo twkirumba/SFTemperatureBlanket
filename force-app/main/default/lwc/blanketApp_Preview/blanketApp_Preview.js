@@ -20,6 +20,7 @@ export default class BlanketApp_Preview extends LightningElement {
     blanketRowData;
     listOfBlanketRows;
     listOfBlanketRowsError;
+    scrollRatio = 0; 
 
     connectedCallback(){
         console.log('knitDateInput: ' + this._lastKnitDateInput);
@@ -35,6 +36,10 @@ export default class BlanketApp_Preview extends LightningElement {
                 //console.log(JSON.stringify(data));
                 this.blanketRowData = data;
                 this.createBlanketRows();
+            })
+            .then(() => {
+                console.log('wire_PreviewBlanket - scrollRatio' + this.scrollRatio);
+                this.setScroll();
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -57,7 +62,7 @@ export default class BlanketApp_Preview extends LightningElement {
             const textDecoration = ''; //rowDate <= lastKnitDate ? 'line-through' : '';
             
             // Style based on date comparison
-            const cellStyle = `text-align: left; border: ${formFactorPropertyName == 'Large' ? '10px' : '3px'} solid ${borderColor}; border-collapse: collapse; 
+            const cellStyle = `text-align: left; border: 10px solid ${borderColor}; border-collapse: collapse; 
                  font-size: 13px; line-height: 1; height: 350px; min-width : 50px; 
                  padding: 2px; background-color: ${backgroundColor}; color: ${textColor};`;
     
@@ -68,6 +73,22 @@ export default class BlanketApp_Preview extends LightningElement {
                 textStyle: `writing-mode: vertical-lr; transform: rotate(0deg); text-decoration: ${textDecoration};`,
             });
         });
+        this.setScrollRatio();
+        console.log(this.scrollRatio);
+        this.setScroll();
+    }
+
+    setScrollRatio(){
+        const beginningOfTheYear = new Date(new Date().getFullYear(), 0, 1);
+        const lastDate = new Date(this.blanketRowData[this.blanketRowData.length - 1].DateWeather__r.Date__c);
+        const lastKnitDate = new Date(this._lastKnitDateInput);
+        this.scrollRatio = (lastKnitDate - beginningOfTheYear) / (lastDate - beginningOfTheYear);
+    }
+
+    setScroll(){
+        const container = this.template.querySelector('.datatable-container');
+        container.scrollLeft = (container.scrollWidth - container.clientWidth) * this.scrollRatio;
+        console.log(container.scrollLeft);
     }
 
     getTextColor(backgroundColor) {
